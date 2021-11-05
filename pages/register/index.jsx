@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import useUser from '../../lib/useUser';
 import Button from '../../components/Button/Button';
 import TextBox from '../../components/TextBox';
 
@@ -11,7 +12,12 @@ function Register() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const onContinue = (e) => {
+  useUser({
+    redirectTo: '/',
+    redirectIfFound: true,
+  });
+
+  const onContinue = async (e) => {
     e.preventDefault();
     const user = {
       firstName,
@@ -22,10 +28,6 @@ function Register() {
     setLoading(true);
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (token) window.location.replace('/');
-  }, [token]);
   return (
     <>
       <span>Register</span>

@@ -1,8 +1,25 @@
-import React, { useEffect } from 'react';
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
+import useUser from '../lib/useUser';
+import fetchJson from '../lib/fetchJson';
+import { useRouter } from 'next/router';
+import Button from '../components/Button';
 
 function Home() {
+  const router = useRouter();
+  const { user, mutateUser } = useUser({ redirectTo: '/login' });
+  if (!user || user.isLoggedIn === false)
+    return (
+      <div>
+        <span>Loading...</span>
+      </div>
+    );
+
+  const onLogout = async (e) => {
+    e.preventDefault();
+    mutateUser(await fetchJson('api/logout', { method: 'POST' }), false);
+    router.push('/login');
+  };
   return (
     <div className={styles.container}>
       <Head>
@@ -14,15 +31,15 @@ function Home() {
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+        <div>{JSON.stringify(user, null, 2)}</div>
+
+        <br />
+        <Button onClick={onLogout}>Logout</Button>
 
         <div className={styles.grid}>
           <a href="https://nextjs.org/docs" className={styles.card}>
             <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
+            <p>Find in-depth information about Next.js features and PPP.</p>
           </a>
 
           <a href="https://nextjs.org/learn" className={styles.card}>
